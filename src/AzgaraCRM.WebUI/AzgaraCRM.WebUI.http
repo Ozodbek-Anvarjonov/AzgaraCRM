@@ -1,0 +1,6 @@
+@AzgaraCRM.WebUI_HostAddress = http://localhost:5147
+
+GET {{AzgaraCRM.WebUI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
