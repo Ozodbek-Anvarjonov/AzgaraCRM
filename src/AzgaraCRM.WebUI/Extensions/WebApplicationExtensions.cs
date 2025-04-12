@@ -1,10 +1,13 @@
-﻿namespace AzgaraCRM.WebUI.Extensions;
+﻿using AzgaraCRM.WebUI.Helpers;
+
+namespace AzgaraCRM.WebUI.Extensions;
 
 public static class WebApplicationExtensions
 {
     public static WebApplication UseWebApplicationMiddleware(this WebApplication app)
     {
         app.UseExceptionHandler();
+        app.UseHalper();
 
         app.UseHttpsRedirection();
         app.UseRouting();
@@ -18,6 +21,14 @@ public static class WebApplicationExtensions
         app.UseSwaggerUI();
 
         app.MapControllers();
+
+        return app;
+    }
+
+    private static WebApplication UseHalper(this WebApplication app)
+    {
+        HttpContextHelper.Accessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+        HttpContextHelper.SystemId = Convert.ToInt64(app.Configuration.GetSection("System:SystemId").Value);
 
         return app;
     }

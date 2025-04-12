@@ -1,4 +1,4 @@
-﻿namespace AzgaraCRM.WebUI.Models;
+﻿namespace AzgaraCRM.WebUI.Domain.Models;
 
 public class PaginationInfo
 {

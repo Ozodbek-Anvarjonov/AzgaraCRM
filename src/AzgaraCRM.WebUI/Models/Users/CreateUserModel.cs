@@ -1,9 +1,6 @@
-﻿using AzgaraCRM.WebUI.Domain.Common;
-using AzgaraCRM.WebUI.Domain.Enums;
+﻿namespace AzgaraCRM.WebUI.Models.Users;
 
-namespace AzgaraCRM.WebUI.Domain.Entities;
-
-public class User : AuditableEntity
+public class CreateUserModel
 {
     public string FirstName { get; set; } = default!;
 
@@ -12,6 +9,4 @@ public class User : AuditableEntity
     public string Email { get; set; } = default!;
 
     public string Password { get; set; } = default!;
-
-    public UserRole Role { get; set; }
 }

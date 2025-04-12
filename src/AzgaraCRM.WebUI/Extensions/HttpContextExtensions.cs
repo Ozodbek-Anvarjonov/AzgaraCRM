@@ -1,4 +1,4 @@
-﻿using AzgaraCRM.WebUI.Models;
+﻿using AzgaraCRM.WebUI.Domain.Models;
 using Newtonsoft.Json;
 
 namespace AzgaraCRM.WebUI.Extensions;

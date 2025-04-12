@@ -1,5 +1,5 @@
 ﻿using AzgaraCRM.WebUI.Domain.Exceptions;
-using AzgaraCRM.WebUI.Models;
+using AzgaraCRM.WebUI.Domain.Models;
 using System.Linq.Expressions;
 
 namespace AzgaraCRM.WebUI.Extensions;

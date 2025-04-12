@@ -1,13 +1,23 @@
 ﻿using AzgaraCRM.WebUI.Domain.Settings;
 using AzgaraCRM.WebUI.ExceptionHandlers;
 using AzgaraCRM.WebUI.Middlewares;
+using AzgaraCRM.WebUI.Persistence.DataContexts;
+using AzgaraCRM.WebUI.Persistence.Interceptors;
+using AzgaraCRM.WebUI.Persistence.Repositories;
+using AzgaraCRM.WebUI.Persistence.UnitOfWork;
+using AzgaraCRM.WebUI.Services;
+using AzgaraCRM.WebUI.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Telegram.WebUI.Extensions;
 
@@ -16,6 +26,7 @@ public static class WebApplicationBuilderExtensions
     public static WebApplicationBuilder AddWebApplicationBuilder(this WebApplicationBuilder builder)
     {
         builder.Services.AddPresentation(builder.Configuration);
+        builder.Services.AddPersistence(builder.Configuration);
 
         return builder;
     }
@@ -30,6 +41,11 @@ public static class WebApplicationBuilderExtensions
         services.AddSecurity(configuration);
         services.AddSignalR();
         services.AddFluentValidation();
+        services.AddHelper();
+        services.AddHttpContextAccessor();
+        services.AddJsonConverter();
+        services.AddServices();
+
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAllOrigins", builder =>
@@ -138,22 +154,59 @@ public static class WebApplicationBuilderExtensions
                 ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
             };
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    var accessToken = context.Request.Query["access_token"];
+            //options.Events = new JwtBearerEvents
+            //{
+            //    OnMessageReceived = context =>
+            //    {
+            //        var accessToken = context.Request.Query["access_token"];
 
-                    var path = context.HttpContext.Request.Path;
-                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat-hub"))
-                    {
-                        context.Token = accessToken;
-                    }
+            //        var path = context.HttpContext.Request.Path;
+            //        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat-hub"))
+            //        {
+            //            context.Token = accessToken;
+            //        }
 
-                    return Task.CompletedTask;
-                }
-            };
+            //        return Task.CompletedTask;
+            //    }
+            //};
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddHelper(this IServiceCollection services)
+    {
+        return services;
+    }
+
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("DefaultDbConnection"));
+
+            options.AddInterceptors(new AuditableInterceptor());
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonConverter(this IServiceCollection services)
+    {
+        services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }
