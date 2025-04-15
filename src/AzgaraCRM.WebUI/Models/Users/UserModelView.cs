@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace AzgaraCRM.WebUI.Models.Users;
 
-public class UserViewModel
+public class UserModelView
 {
     public long Id { get; set; }
 
@@ -12,8 +12,6 @@ public class UserViewModel
     public string LastName { get; set; } = default!;
 
     public string Email { get; set; } = default!;
-
-    public string Password { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole Role { get; set; }

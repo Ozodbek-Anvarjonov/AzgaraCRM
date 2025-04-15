@@ -10,6 +10,6 @@ public class UserMapper : Profile
     {
         CreateMap<CreateUserModel, User>();
         CreateMap<UpdateUserModel, User>();
-        CreateMap<User, UserViewModel>();
+        CreateMap<User, UserModelView>();
     }
 }

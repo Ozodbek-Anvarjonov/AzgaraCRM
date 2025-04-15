@@ -1,4 +1,5 @@
 ﻿using AzgaraCRM.WebUI.Domain.Entities;
+using AzgaraCRM.WebUI.Domain.Enums;
 using AzgaraCRM.WebUI.Domain.Exceptions;
 using AzgaraCRM.WebUI.Domain.Models;
 using AzgaraCRM.WebUI.Extensions;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AzgaraCRM.WebUI.Services;
 
-public class UserService(IUnitOfWork unitOfWork) : IUserService
+public class UserService(IUnitOfWork unitOfWork, IPasswordHasherService hasherService) : IUserService
 {
     public async Task<IEnumerable<User>> GetAllAsync(
         PaginationParameters @params,
@@ -40,7 +41,8 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
     {
         var result = await unitOfWork.ExecuteInTransactionAsync<User>(async () =>
         {
-            user.Role = Domain.Enums.UserRole.Admin;
+            user.Password = await hasherService.HashPasswordAsync(user.Password);
+            user.Role = UserRole.Admin;
             var entity = await unitOfWork.Users.AddAsync(user, cancellationToken: cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -56,17 +58,15 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
 
         existUser.FirstName = user.FirstName;
         existUser.LastName = user.LastName;
-        existUser.Email = user.Email;
 
         var result = await unitOfWork.ExecuteInTransactionAsync<User>(async () =>
         {
-            user.Role = Domain.Enums.UserRole.Admin;
             var entity = await unitOfWork.Users.ModifyAsync(existUser, cancellationToken: cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return entity;
         });
-
+        
         return result;
     }
 

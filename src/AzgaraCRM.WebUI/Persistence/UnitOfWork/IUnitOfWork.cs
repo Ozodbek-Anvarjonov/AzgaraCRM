@@ -6,6 +6,10 @@ namespace AzgaraCRM.WebUI.Persistence.UnitOfWork;
 public interface IUnitOfWork
 {
     IRepository<User> Users { get; }
+    
+    IRepository<Category> Categories { get; }
+
+    IRepository<Food> Foods { get; }
 
     Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken cancellationToken = default);
 

@@ -1,4 +1,5 @@
 ﻿using AzgaraCRM.WebUI.Helpers;
+using AzgaraCRM.WebUI.Middlewares;
 
 namespace AzgaraCRM.WebUI.Extensions;
 
@@ -6,8 +7,8 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UseWebApplicationMiddleware(this WebApplication app)
     {
+        app.UseHelper();
         app.UseExceptionHandler();
-        app.UseHalper();
 
         app.UseHttpsRedirection();
         app.UseRouting();
@@ -15,7 +16,6 @@ public static class WebApplicationExtensions
         app.UseCors("AllowAllOrigins");
         app.UseAuthentication();
         app.UseAuthorization();
-
 
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -25,10 +25,13 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    private static WebApplication UseHalper(this WebApplication app)
+    private static WebApplication UseHelper(this WebApplication app)
     {
         HttpContextHelper.Accessor = app.Services.GetRequiredService<IHttpContextAccessor>();
         HttpContextHelper.SystemId = Convert.ToInt64(app.Configuration.GetSection("System:SystemId").Value);
+
+        app.Services.Migration();
+        app.Services.SeedData();
 
         return app;
     }

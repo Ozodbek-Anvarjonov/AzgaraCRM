@@ -8,6 +8,7 @@ using AzgaraCRM.WebUI.Persistence.UnitOfWork;
 using AzgaraCRM.WebUI.Services;
 using AzgaraCRM.WebUI.Services.Interfaces;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -45,6 +46,7 @@ public static class WebApplicationBuilderExtensions
         services.AddHttpContextAccessor();
         services.AddJsonConverter();
         services.AddServices();
+        services.AddFluentValidation();
 
         services.AddCors(options =>
         {
@@ -187,7 +189,6 @@ public static class WebApplicationBuilderExtensions
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultDbConnection"));
-
             options.AddInterceptors(new AuditableInterceptor());
         });
 
@@ -207,6 +208,11 @@ public static class WebApplicationBuilderExtensions
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+        services.AddScoped<ITokenGeneratorService, TokenGeneratorService>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IFoodService, FoodService>();
 
         return services;
     }

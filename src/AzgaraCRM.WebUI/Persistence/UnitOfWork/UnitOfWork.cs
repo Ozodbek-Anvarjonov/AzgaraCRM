@@ -8,15 +8,19 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly AppDbContext _dbContext;
 
-    public UnitOfWork(AppDbContext context, IRepository<User> users)
+    public UnitOfWork(AppDbContext context, IRepository<User> users, IRepository<Category> categories, IRepository<Food> foods)
     {
         _dbContext = context;
 
         Users = users;
+        Categories = categories;
+        Foods = foods;
     }
 
     #region
     public IRepository<User> Users { get; }
+    public IRepository<Category> Categories { get; }
+    public IRepository<Food> Foods { get; }
     #endregion
 
     #region
