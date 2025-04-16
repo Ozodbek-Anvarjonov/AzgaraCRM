@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AzgaraCRM.WebUI.Domain.Entities;
-using AzgaraCRM.WebUI.Models.Categories;
 using AzgaraCRM.WebUI.Models.Foods;
 
 namespace AzgaraCRM.WebUI.Mappers;
@@ -14,8 +13,7 @@ public class FoodMapper : Profile
         CreateMap<Food, FoodModelView>()
             .ConstructUsing((src, context) => new FoodModelView
             {
-                CategoryName = src.Category.Name,
-            })
-            .PreserveReferences();
+                CategoryName = src.Category?.Name,
+            });
     }
 }

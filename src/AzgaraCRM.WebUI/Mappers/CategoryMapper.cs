@@ -12,8 +12,9 @@ public class CategoryMapper : Profile
         CreateMap<CreateCategoryModel, Category>();
         CreateMap<UpdateCategoryModel, Category>();
         CreateMap<Category, CategoryModelView>()
-            .ForMember(dest => dest.Foods,
-                opt => opt.MapFrom(src => src.Foods))
-            .PreserveReferences();
+            .ConstructUsing((src, context) => new CategoryModelView
+            {
+                Foods = context.Mapper.Map<IEnumerable<FoodModelView>>(src.Foods)
+            }); ;
     }
 }

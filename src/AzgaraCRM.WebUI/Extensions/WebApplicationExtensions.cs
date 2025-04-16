@@ -1,5 +1,4 @@
 ﻿using AzgaraCRM.WebUI.Helpers;
-using AzgaraCRM.WebUI.Middlewares;
 
 namespace AzgaraCRM.WebUI.Extensions;
 
@@ -31,7 +30,7 @@ public static class WebApplicationExtensions
         HttpContextHelper.SystemId = Convert.ToInt64(app.Configuration.GetSection("System:SystemId").Value);
 
         app.Services.Migration();
-        app.Services.SeedData();
+        //app.Services.SeedData();
 
         return app;
     }
