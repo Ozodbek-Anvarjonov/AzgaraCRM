@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AzgaraCRM.WebUI.Services;
 
-public class FoodService(IUnitOfWork unitOfWork) : IFoodService
+public class FoodService(IUnitOfWork unitOfWork, IAssetService assetService) : IFoodService
 {
     public async Task<IEnumerable<Food>> GetAllAsync(
     PaginationParameters @params,
@@ -35,10 +35,12 @@ public class FoodService(IUnitOfWork unitOfWork) : IFoodService
         return food;
     }
 
-    public async Task<Food> CreateAsync(Food food, CancellationToken cancellationToken = default)
+    public async Task<Food> CreateAsync(Food food, IFormFile? file, CancellationToken cancellationToken = default)
     {
         var result = await unitOfWork.ExecuteInTransactionAsync<Food>(async () =>
         {
+            if (file is not null)
+                food.Path = await assetService.UploadAsync(file, cancellationToken: cancellationToken);
             var entity = await unitOfWork.Foods.AddAsync(food, cancellationToken: cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -48,13 +50,15 @@ public class FoodService(IUnitOfWork unitOfWork) : IFoodService
         return result;
     }
 
-    public async Task<Food> UpdateAsync(long id, Food food, CancellationToken cancellationToken = default)
+    public async Task<Food> UpdateAsync(long id, Food food, IFormFile? file, CancellationToken cancellationToken = default)
     {
         var existFood = await GetByIdAsync(id, cancellationToken);
 
         existFood.Name = food.Name;
         existFood.Price = food.Price;
         existFood.Left = food.Left;
+        if (file is not null)
+            existFood.Path = await assetService.UploadAsync(file, cancellationToken: cancellationToken);
 
         var result = await unitOfWork.ExecuteInTransactionAsync<Food>(async () =>
         {

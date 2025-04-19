@@ -11,4 +11,6 @@ public class UpdateFoodModel
     public int Left { get; set; }
 
     public long CategoryId { get; set; }
+
+    public IFormFile? File { get; set; }
 }

@@ -13,9 +13,9 @@ public interface IFoodService
 
     Task<Food> GetByIdAsync(long id, CancellationToken cancellationToken = default);
 
-    Task<Food> CreateAsync(Food food, CancellationToken cancellationToken = default);
+    Task<Food> CreateAsync(Food food, IFormFile? file, CancellationToken cancellationToken = default);
 
-    Task<Food> UpdateAsync(long id, Food food, CancellationToken cancellationToken = default);
+    Task<Food> UpdateAsync(long id, Food food, IFormFile? file, CancellationToken cancellationToken = default);
 
     Task DeleteByIdAsync(long id, CancellationToken cancellationToken = default);
 }

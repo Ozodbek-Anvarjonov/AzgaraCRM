@@ -50,10 +50,9 @@ public static class WebApplicationBuilderExtensions
         {
             options.AddPolicy("AllowAllOrigins", builder =>
             {
-                builder.WithOrigins("http://localhost:5173", "https://chat-app-jade-five.vercel.app") // ✅ Specify your Vue.js frontend origin
+                builder.AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
             });
         });
 
@@ -211,6 +210,7 @@ public static class WebApplicationBuilderExtensions
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IFoodService, FoodService>();
+        services.AddScoped<IAssetService, AssetService>();
 
         return services;
     }

@@ -12,6 +12,9 @@ public class FoodModelView
 
     public int Left { get; set; }
 
+    public string? Path { get; set; }
+
     public long CategoryId { get; set; }
+
     public string CategoryName { get; set; } = default!;
 }

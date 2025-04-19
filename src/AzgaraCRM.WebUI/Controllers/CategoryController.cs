@@ -10,6 +10,7 @@ using AzgaraCRM.WebUI.Models.Users;
 using AzgaraCRM.WebUI.Services.Interfaces;
 using AzgaraCRM.WebUI.Validations.Categories;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzgaraCRM.WebUI.Controllers;
@@ -22,6 +23,7 @@ public class CategoryController(
     ICategoryService categoryService) : BaseController
 {
     [HttpGet]
+    [AllowAnonymous]
     public async ValueTask<IActionResult> GetAll(
         [FromQuery] PaginationParameters @params,
         [FromQuery] SortingParameters sort,
@@ -34,6 +36,7 @@ public class CategoryController(
     }
 
     [HttpGet("{id:long}")]
+    [AllowAnonymous]
     public async ValueTask<IActionResult> Get([FromRoute] long id)
     {
         var category = await categoryService.GetByIdAsync(id, HttpContext.RequestAborted);

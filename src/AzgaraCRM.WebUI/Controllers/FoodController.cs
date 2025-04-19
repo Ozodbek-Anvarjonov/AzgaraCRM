@@ -8,6 +8,7 @@ using AzgaraCRM.WebUI.Models.Foods;
 using AzgaraCRM.WebUI.Models.Users;
 using AzgaraCRM.WebUI.Services.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzgaraCRM.WebUI.Controllers;
@@ -20,6 +21,7 @@ public class FoodController(
     IFoodService foodService) : BaseController
 {
     [HttpGet]
+    [AllowAnonymous]
     public async ValueTask<IActionResult> GetAll(
         [FromQuery] PaginationParameters @params,
         [FromQuery] SortingParameters sort,
@@ -32,6 +34,7 @@ public class FoodController(
     }
 
     [HttpGet("{id:long}")]
+    [AllowAnonymous]
     public async ValueTask<IActionResult> Get([FromRoute] long id)
     {
         var food = await foodService.GetByIdAsync(id, HttpContext.RequestAborted);
@@ -42,21 +45,21 @@ public class FoodController(
 
     [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] CreateFoodModel model)
+    public async ValueTask<IActionResult> Post(CreateFoodModel model)
     {
         _ = await createFoodValidator.EnsureValidationAsync(model, HttpContext.RequestAborted);
-        var food = await foodService.CreateAsync(mapper.Map<Food>(model), HttpContext.RequestAborted);
+        var food = await foodService.CreateAsync(mapper.Map<Food>(model), model.File, HttpContext.RequestAborted);
 
         return Ok(mapper.Map<FoodModelView>(food));
     }
 
     [HttpPut("{id:long}")]
-    public async ValueTask<IActionResult> Put([FromRoute] long id, [FromBody] UpdateFoodModel model)
+    public async ValueTask<IActionResult> Put([FromRoute] long id, UpdateFoodModel model)
     {
         _ = await updateFoodValidator.EnsureValidationAsync(model, HttpContext.RequestAborted);
-        var food = await foodService.UpdateAsync(id, mapper.Map<Food>(model), HttpContext.RequestAborted);
+        var food = await foodService.UpdateAsync(id, mapper.Map<Food>(model), model.File, HttpContext.RequestAborted);
 
-        return Ok(mapper.Map<UserModelView>(food));
+        return Ok(mapper.Map<FoodModelView>(food));
     }
 
     [CustomAuthorize(nameof(UserRole.Owner))]

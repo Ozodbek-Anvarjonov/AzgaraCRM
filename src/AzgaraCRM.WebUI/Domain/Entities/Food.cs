@@ -11,6 +11,8 @@ public class Food : AuditableEntity
 
     public int Left { get; set; }
 
+    public string? Path { get; set; }
+
     public long CategoryId { get; set; }
     public Category Category { get; set; }
 }

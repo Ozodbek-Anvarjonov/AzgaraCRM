@@ -19,6 +19,8 @@ public static class WebApplicationExtensions
         app.UseSwagger();
         app.UseSwaggerUI();
 
+        app.UseStaticFiles();
+
         app.MapControllers();
 
         return app;

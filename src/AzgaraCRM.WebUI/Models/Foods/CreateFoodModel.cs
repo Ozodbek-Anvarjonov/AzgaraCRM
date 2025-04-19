@@ -9,4 +9,6 @@ public class CreateFoodModel
     public int Left { get; set; }
 
     public long CategoryId { get; set; }
+
+    public IFormFile? File { get; set; }
 }
