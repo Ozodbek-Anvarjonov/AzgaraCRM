@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using AzgaraCRM.WebApi.Validations.Categories;
 using AzgaraCRM.WebUI.Domain.Entities;
 using AzgaraCRM.WebUI.Domain.Enums;
 using AzgaraCRM.WebUI.Domain.Models;
 using AzgaraCRM.WebUI.Extensions;
 using AzgaraCRM.WebUI.Middlewares;
 using AzgaraCRM.WebUI.Models.Categories;
-using AzgaraCRM.WebUI.Models.Users;
 using AzgaraCRM.WebUI.Services.Interfaces;
-using AzgaraCRM.WebUI.Validations.Categories;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +42,6 @@ public class CategoryController(
         return Ok(result);
     }
 
-    [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpPost]
     public async ValueTask<IActionResult> Post([FromBody] CreateCategoryModel model)
     {
@@ -64,7 +60,6 @@ public class CategoryController(
         return Ok(mapper.Map<CategoryModelView>(category));
     }
 
-    [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> Delete([FromRoute] long id)
     {

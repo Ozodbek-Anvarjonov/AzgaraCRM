@@ -18,6 +18,6 @@ public class AssetService(IWebHostEnvironment environment) : IAssetService
         var bytes = memoryStream.ToArray();
         await fileStream.WriteAsync(bytes, cancellationToken);
 
-        return $"{folderName}//{fileName}";
+        return $"{folderName}/{fileName}";
     }
 }

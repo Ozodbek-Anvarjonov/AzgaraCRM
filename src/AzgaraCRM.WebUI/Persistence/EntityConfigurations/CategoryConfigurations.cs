@@ -14,6 +14,6 @@ public class CategoryConfigurations : IEntityTypeConfiguration<Category>
             .HasMany(entity =>entity.Foods)
             .WithOne(entity => entity.Category)
             .HasForeignKey(entity => entity.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

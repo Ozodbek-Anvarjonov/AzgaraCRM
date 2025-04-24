@@ -43,7 +43,6 @@ public class FoodController(
         return Ok(result);
     }
 
-    [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpPost]
     public async ValueTask<IActionResult> Post(CreateFoodModel model)
     {
@@ -62,7 +61,6 @@ public class FoodController(
         return Ok(mapper.Map<FoodModelView>(food));
     }
 
-    [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> Delete([FromRoute] long id)
     {
