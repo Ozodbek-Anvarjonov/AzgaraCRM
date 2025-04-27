@@ -219,6 +219,7 @@ public static class WebApplicationBuilderExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IFoodService, FoodService>();
         services.AddScoped<IAssetService, AssetService>();
+        services.AddScoped<IStatisticsService, StatisticsService>();
 
         return services;
     }
