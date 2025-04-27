@@ -11,12 +11,14 @@ public class CustomExceptionHandler : IExceptionHandler
         if (exception is not CustomException)
             return false;
 
-        httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+        var customException = (CustomException)exception;
+
+        httpContext.Response.StatusCode = customException.StatusCode;
         httpContext.Response.ContentType = "application/json";
 
         var problem = new ProblemDetails
         {
-            Status = StatusCodes.Status409Conflict,
+            Status = customException.StatusCode,
             Detail = exception.Message,
         };
 

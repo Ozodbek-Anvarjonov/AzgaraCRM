@@ -59,6 +59,23 @@ public class UserController(
     }
 
     [CustomAuthorize(nameof(UserRole.Owner))]
+    [HttpPatch("{id:long}/enable")]
+    public async ValueTask<IActionResult> Enable([FromRoute] long id)
+    {
+        _ = await userService.EnableAsync(id, HttpContext.RequestAborted);
+        return Ok();
+    }
+
+
+    [CustomAuthorize(nameof(UserRole.Owner))]
+    [HttpPatch("{id:long}/disable")]
+    public async ValueTask<IActionResult> Disable([FromRoute] long id)
+    {
+        _ = await userService.DisableAsync(id, HttpContext.RequestAborted);
+        return Ok();
+    }
+
+    [CustomAuthorize(nameof(UserRole.Owner))]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> Delete([FromRoute] long id)
     {

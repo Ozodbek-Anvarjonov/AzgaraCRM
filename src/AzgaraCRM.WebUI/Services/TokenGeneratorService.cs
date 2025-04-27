@@ -1,4 +1,5 @@
 ﻿using AzgaraCRM.WebUI.Domain.Entities;
+using AzgaraCRM.WebUI.Domain.Exceptions;
 using AzgaraCRM.WebUI.Domain.Settings;
 using AzgaraCRM.WebUI.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,9 @@ public class TokenGeneratorService : ITokenGeneratorService
 
     public Task<string> GenerateTokenAsync(User user, CancellationToken cancellationToken = default)
     {
+        if (user.IsDisabled)
+            throw new CustomException($"The user ID {user.Id} is disabled.", 409);
+
         var jwtSecurityToken = JwtSecurityToken(user);
         var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 

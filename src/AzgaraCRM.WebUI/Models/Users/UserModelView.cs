@@ -15,4 +15,6 @@ public class UserModelView
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole Role { get; set; }
+
+    public bool IsDisabled { get; set; }
 }

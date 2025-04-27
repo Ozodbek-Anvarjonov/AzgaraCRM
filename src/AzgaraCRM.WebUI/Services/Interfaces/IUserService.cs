@@ -17,5 +17,9 @@ public interface IUserService
 
     Task<User> UpdateAsync(long id, User user, CancellationToken cancellationToken = default);
 
+    Task<bool> EnableAsync(long id, CancellationToken cancellationToken = default);
+
+    Task<bool> DisableAsync(long id, CancellationToken cancellationToken = default);
+
     Task DeleteByIdAsync(long id, CancellationToken cancellationToken = default);
 }

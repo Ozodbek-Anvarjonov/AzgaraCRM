@@ -11,6 +11,13 @@ public interface IFoodService
         string? search = null,
         CancellationToken cancellationToken = default);
 
+    Task<IEnumerable<Food>> GetByCategoryIdAsync(
+        long id,
+        PaginationParameters @params,
+        SortingParameters sort,
+        string? search = null,
+        CancellationToken cancellationToken = default);
+
     Task<Food> GetByIdAsync(long id, CancellationToken cancellationToken = default);
 
     Task<Food> CreateAsync(Food food, IFormFile? file, CancellationToken cancellationToken = default);

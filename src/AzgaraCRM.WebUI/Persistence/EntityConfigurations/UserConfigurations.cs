@@ -1,6 +1,5 @@
 ﻿using AzgaraCRM.WebUI.Domain.Entities;
 using AzgaraCRM.WebUI.Domain.Enums;
-using AzgaraCRM.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,7 +21,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
                 FirstName = "system",
                 LastName = "system",
                 Email = "system@system",
-                Password = new PasswordHasherService().HashPassword("system.developer"),
+                Password = "$2a$08$7HliKibMVbwPXiNo1m.eBesSFa4t3wWcA6nR3Wmte76ErM9rIRBiW",
                 Role = UserRole.Owner,
             });
     }

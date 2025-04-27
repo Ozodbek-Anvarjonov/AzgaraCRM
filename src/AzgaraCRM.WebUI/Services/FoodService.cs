@@ -28,6 +28,25 @@ public class FoodService(IUnitOfWork unitOfWork, IAssetService assetService) : I
         return await foods.ToPaginate(@params).ToListAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<Food>> GetByCategoryIdAsync(
+        long id,
+        PaginationParameters @params,
+        SortingParameters sort,
+        string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        var foods = unitOfWork.Foods.SelectAsQueryable(entity => entity.CategoryId == id, includes: ["Category"]);
+
+        if (search is not null)
+            foods = foods.Where(entity => entity.Name.ToLower().Contains(search.ToLower())
+                || entity.Price.ToString().Contains(search)
+                || entity.Left.ToString().Contains(search));
+
+        foods = foods.Where(entity => !entity.IsDeleted).SortBy(sort);
+
+        return await foods.ToPaginate(@params).ToListAsync(cancellationToken);
+    }
+
     public async Task<Food> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         var food = await unitOfWork.Foods.SelectAsync(entity => entity.Id == id && !entity.IsDeleted, includes: ["Category"], cancellationToken: cancellationToken)
@@ -39,6 +58,9 @@ public class FoodService(IUnitOfWork unitOfWork, IAssetService assetService) : I
     {
         var result = await unitOfWork.ExecuteInTransactionAsync<Food>(async () =>
         {
+            _ = await unitOfWork.Categories.SelectAsync(entity => entity.Id == food.CategoryId && !entity.IsDeleted)
+                ?? throw new NotFoundException(nameof(Category), food.CategoryId);
+
             if (file is not null)
                 food.Path = await assetService.UploadAsync(file, cancellationToken: cancellationToken);
             var entity = await unitOfWork.Foods.AddAsync(food, cancellationToken: cancellationToken);

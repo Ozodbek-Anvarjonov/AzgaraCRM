@@ -9,6 +9,7 @@ using AzgaraCRM.WebUI.Services;
 using AzgaraCRM.WebUI.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
@@ -115,6 +116,13 @@ public static class WebApplicationBuilderExtensions
                 { jwtSecurityScheme, Array.Empty<string>() },
             });
         });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(nameof(ActiveUserRequirement), policy => policy.Requirements.Add(new ActiveUserRequirement()));
+        });
+
+        services.AddScoped<IAuthorizationHandler, ActiveUserRequirementHandler>();
 
         return services;
     }

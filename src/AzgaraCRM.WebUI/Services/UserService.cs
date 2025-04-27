@@ -66,8 +66,30 @@ public class UserService(IUnitOfWork unitOfWork, IPasswordHasherService hasherSe
 
             return entity;
         });
-        
+
         return result;
+    }
+
+    public async Task<bool> EnableAsync(long id, CancellationToken cancellationToken = default)
+    {
+        var user = await unitOfWork.Users.SelectAsync(entity => entity.Id == id && entity.Role == UserRole.Admin && !entity.IsDeleted, isTracked: true, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException(nameof(User), id);
+
+        user.IsDisabled = false;
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    public async Task<bool> DisableAsync(long id, CancellationToken cancellationToken = default)
+    {
+        var user = await unitOfWork.Users.SelectAsync(entity => entity.Id == id && entity.Role == UserRole.Admin && !entity.IsDeleted, isTracked: true, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException(nameof(User), id);
+
+        user.IsDisabled = true;
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
     public async Task DeleteByIdAsync(long id, CancellationToken cancellationToken = default)

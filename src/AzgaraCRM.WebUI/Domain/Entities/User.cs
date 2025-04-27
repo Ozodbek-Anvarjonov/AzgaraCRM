@@ -14,4 +14,6 @@ public class User : AuditableEntity
     public string Password { get; set; } = default!;
 
     public UserRole Role { get; set; }
+
+    public bool IsDisabled { get; set; }
 }

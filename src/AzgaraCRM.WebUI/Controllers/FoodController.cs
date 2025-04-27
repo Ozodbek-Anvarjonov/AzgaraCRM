@@ -43,6 +43,20 @@ public class FoodController(
         return Ok(result);
     }
 
+    [HttpGet("category/{id:long}")]
+    [AllowAnonymous]
+    public async ValueTask<IActionResult> GetByCategoryId(
+        [FromRoute] long id,
+        [FromQuery] PaginationParameters @params,
+        [FromQuery] SortingParameters sort,
+        [FromQuery] string? search = null)
+    {
+        var foods = await foodService.GetByCategoryIdAsync(id, @params, sort, search, HttpContext.RequestAborted);
+        var result = mapper.Map<IEnumerable<FoodModelView>>(foods);
+
+        return Ok(result);
+    }
+
     [HttpPost]
     public async ValueTask<IActionResult> Post(CreateFoodModel model)
     {
