@@ -5,4 +5,6 @@ public class StatisticsModelView
     public int CategoryCount { get; set; }
 
     public int FoodCount { get; set; }
+
+    public int AdminCount { get; set; }
 }

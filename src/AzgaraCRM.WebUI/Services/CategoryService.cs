@@ -10,21 +10,24 @@ namespace AzgaraCRM.WebUI.Services;
 
 public class CategoryService(IUnitOfWork unitOfWork) : ICategoryService
 {
-    public async Task<IEnumerable<Category>> GetAllAsync(
-    PaginationParameters @params,
-        SortingParameters sort,
-        string? search = null,
-        CancellationToken cancellationToken = default)
-    {
-        var categories = unitOfWork.Categories.SelectAsQueryable(includes: ["Foods"]);
+        public async Task<IEnumerable<Category>> GetAllAsync(
+        PaginationParameters @params,
+            SortingParameters sort,
+            string? search = null,
+            CancellationToken cancellationToken = default)
+        {
+            var categories = unitOfWork.Categories.SelectAsQueryable();
 
-        if (search is not null)
-            categories = categories.Where(entity => entity.Name.ToLower().Contains(search.ToLower()));
+            if (search is not null)
+                categories = categories.Where(entity => entity.Name.ToLower().Contains(search.ToLower()));
 
-        categories = categories.Where(entity => !entity.IsDeleted).SortBy(sort);
+            categories = categories
+                .Where(entity => !entity.IsDeleted)
+                .Include(entity => entity.Foods.Where(food => !food.IsDeleted))
+                .SortBy(sort);
 
-        return await categories.ToPaginate(@params).ToListAsync(cancellationToken);
-    }
+            return await categories.ToPaginate(@params).ToListAsync(cancellationToken);
+        }
 
     public async Task<Category> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
