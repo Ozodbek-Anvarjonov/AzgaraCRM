@@ -193,7 +193,7 @@ public static class WebApplicationBuilderExtensions
 
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultDbConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultDbConnection"));
             options.AddInterceptors(new AuditableInterceptor());
         });
 

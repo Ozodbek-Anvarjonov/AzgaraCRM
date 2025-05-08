@@ -96,6 +96,9 @@ public class UserService(IUnitOfWork unitOfWork, IPasswordHasherService hasherSe
     {
         var user = await GetByIdAsync(id, cancellationToken);
 
+        if (user.Role == UserRole.Owner)
+            throw new ArgumentIsNotValidException("The user in this role can not be deleted.");
+
         await unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await unitOfWork.Users.RemoveAsync(user, cancellationToken);
